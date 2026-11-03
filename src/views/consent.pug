@@ -5,7 +5,7 @@ html(lang="en")
     base(href=baseUrl + '/')
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title #{displayName} · Consent
-    include partials/icons.pug
+    link(rel="icon" href="images/favicon.ico")
     link(rel="stylesheet", href="styles/base.css")
     link(rel="stylesheet", href="styles/consent.css")
 
@@ -17,11 +17,8 @@ html(lang="en")
       .consent-header
         .consent__connection
           .consent__app-circle
-            if hasLogo
-              img(src="images/logo.png", alt=displayName + ' logo', onerror="this.hidden=true;this.nextElementSibling.hidden=false")
-              span(hidden) AS
-            else
-              span AS
+            img(src="images/logo.png", alt=displayName + ' logo', onerror="this.hidden=true;this.nextElementSibling.hidden=false")
+            span(hidden) AS
           .consent__connector
             span ✔
           .consent__app-circle

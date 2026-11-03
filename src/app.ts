@@ -31,7 +31,6 @@ export function createApp() {
   app.set('view engine', 'pug');
   const publicPath = path.join(process.cwd(), 'public');
   app.locals.displayName = config.displayName;
-  app.locals.hasLogo = fs.existsSync(path.join(publicPath, 'images/logo.png'));
   app.locals.baseUrl = config.serviceUrl;
   app.locals.demoMode = config.demoUsername || false;
   app.locals.demoUsername = config.demoUsername;

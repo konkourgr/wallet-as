@@ -26,7 +26,6 @@ describe('optional public branding', () => {
 
     try {
       const { app } = createApp();
-      expect(app.locals.hasLogo).toBe(false);
 
       for (const view of ['index', 'login', 'consent', 'pid-callback']) {
         const html = await new Promise<string>((resolve, reject) => {
@@ -38,8 +37,9 @@ describe('optional public branding', () => {
         });
         expect(html).toContain('<!DOCTYPE html>');
         if (view === 'consent') {
-          expect(html).toContain('<div class="consent__app-circle"><span>AS</span></div>');
-          expect(html).not.toContain('src="images/logo.png"');
+          expect(html).toContain('src="images/logo.png"');
+          expect(html).toContain('onerror="this.hidden=true;this.nextElementSibling.hidden=false"');
+          expect(html).toContain('<span hidden>AS</span>');
         }
       }
     } finally {
