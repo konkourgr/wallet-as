@@ -2,8 +2,10 @@ doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
+    base(href=baseUrl + '/')
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Completing sign-in…
+    title #{displayName} · Completing sign-in…
+    include partials/icons.pug
   body
     form#f(method="post")
       input(type="hidden", name="response_code", id="response_code")

@@ -4,7 +4,8 @@ html(lang="en")
     meta(charset="UTF-8")
     base(href=baseUrl + '/')
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Wallet AS · Consent
+    title #{displayName} · Consent
+    include partials/icons.pug
     link(rel="stylesheet", href="styles/base.css")
     link(rel="stylesheet", href="styles/consent.css")
 
@@ -15,7 +16,12 @@ html(lang="en")
     .consent-page
       .consent-header
         .consent__connection
-          .consent__app-circle AS
+          .consent__app-circle
+            if hasLogo
+              img(src="images/logo.png", alt=displayName + ' logo', onerror="this.hidden=true;this.nextElementSibling.hidden=false")
+              span(hidden) AS
+            else
+              span AS
           .consent__connector
             span ✔
           .consent__app-circle
