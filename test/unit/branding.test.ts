@@ -32,7 +32,7 @@ describe('branding views', () => {
   it('renders home branding and the wwWallet attribution link', () => {
     const html = render('index');
     expect(html).toContain('<h1 class="home__title">Example &amp; Wallet</h1>');
-    expect(html).toContain('Powered by');
+    expect(html).toContain('Powered by&nbsp');
     expect(html).toContain('href="https://github.com/wwWallet"');
   });
 
