@@ -1,15 +1,23 @@
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { runInNewContext } from 'node:vm';
 import { describe, expect, it } from 'vitest';
 
 const { renderFile } = createRequire(import.meta.url)('pug');
 const baseUrl = 'https://example.org/as';
 
-function render(view: string) {
+function render(
+  view: string,
+  client = { clientName: 'Issuer' } as {
+    clientName?: string;
+    clientId?: string;
+    logoUri?: string;
+  },
+) {
   return renderFile(path.resolve(`src/views/${view}.pug`), {
     displayName: 'Example & Wallet',
     baseUrl,
-    client: { clientName: 'Issuer' },
+    client,
     params: {},
     uid: 'test',
   });
@@ -53,5 +61,28 @@ describe('branding views', () => {
     expect(html).toContain('alt="Example &amp; Wallet logo"');
     expect(html).toContain('onerror="this.hidden=true;this.nextElementSibling.hidden=false"');
     expect(html).toContain('<span hidden>AS</span>');
+  });
+
+  it.each([
+    { clientName: 'Issuer', clientId: 'wallet-client', initial: 'I', name: 'Issuer' },
+    { clientId: 'wallet-client', initial: 'W', name: 'wallet-client' },
+    { clientName: '', clientId: 'wallet-client', initial: 'W', name: 'wallet-client' },
+  ])('uses $initial as the client fallback for $name', ({ initial, name, ...client }) => {
+    const withoutLogo = render('consent', client);
+    expect(withoutLogo).toContain(`<div class="consent__app-circle"><span>${initial}</span></div>`);
+
+    const logoUri = 'https://example.org/client-logo.png';
+    const withLogo = render('consent', { ...client, logoUri });
+    const clientLogo = withLogo.match(
+      /<img src="https:\/\/example.org\/client-logo.png" alt="([^"]*)" onerror="([^"]*)"><span hidden>([^<]*)<\/span>/,
+    );
+    expect(clientLogo).not.toBeNull();
+    expect(clientLogo![1]).toBe(`${name} logo`);
+    expect(clientLogo![3]).toBe(initial);
+
+    const image = { hidden: false, nextElementSibling: { hidden: true } };
+    runInNewContext(`(function () { ${clientLogo![2]} }).call(image)`, { image });
+    expect(image.hidden).toBe(true);
+    expect(image.nextElementSibling.hidden).toBe(false);
   });
 });
