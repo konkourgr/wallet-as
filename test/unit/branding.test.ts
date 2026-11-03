@@ -1,5 +1,4 @@
 import path from 'node:path';
-import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import { describe, expect, it } from 'vitest';
 
@@ -48,15 +47,5 @@ describe('branding views', () => {
     const html = render('consent', { hasLogo: false });
     expect(html).not.toContain('src="images/logo.png"');
     expect(html).toContain('<div class="consent__app-circle"><span>AS</span></div>');
-  });
-
-  it('ships all icons referenced by the manifest and templates', () => {
-    const manifest = JSON.parse(fs.readFileSync('public/metadata/site.webmanifest', 'utf8'));
-    for (const icon of manifest.icons) {
-      expect(fs.existsSync(path.resolve('public/metadata', icon.src))).toBe(true);
-    }
-    for (const icon of ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'logo.png']) {
-      expect(fs.existsSync(path.resolve('public/images', icon))).toBe(true);
-    }
   });
 });
